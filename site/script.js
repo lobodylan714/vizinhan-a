@@ -120,6 +120,8 @@ forms.login.addEventListener('submit', async (event) => {
 forms.register.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  const submitButton = forms.register.querySelector('button[type="submit"]');
+
   const nome = document.getElementById('registerName').value.trim();
   const email = document.getElementById('registerEmail').value.trim().toLowerCase();
   const password = document.getElementById('registerPassword').value.trim();
@@ -145,22 +147,12 @@ forms.register.addEventListener('submit', async (event) => {
   }
 
   try {
-    const { data: existingUser, error: selectError } = await supabaseClient
-      .from('usuarios')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle();
+    submitButton.disabled = true;
+    submitButton.textContent = 'Cadastrando...';
 
-    if (selectError) throw selectError;
-
-    if (existingUser) {
-      showMessage('Este e-mail já está cadastrado.', 'error');
-      return;
-    }
-
-    const { data, error } = await supabaseClient.from('usuarios').insert([
+    const { error } = await supabaseClient.from('usuarios').insert([
       { nome, email, senha: password }
-    ]).select();
+    ]);
 
     if (error) throw error;
 
@@ -172,7 +164,14 @@ forms.register.addEventListener('submit', async (event) => {
     }, 800);
   } catch (error) {
     console.error(error);
-    showMessage('Erro ao cadastrar. Verifique se a tabela existe e se o Supabase permite inserir dados públicos.', 'error');
+    if (error.code === '23505') {
+      showMessage('Este e-mail já está cadastrado.', 'error');
+    } else {
+      showMessage('Não foi possível salvar o cadastro no Supabase. Verifique a tabela e a política de INSERT.', 'error');
+    }
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Cadastrar';
   }
 });
 
