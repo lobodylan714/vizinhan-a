@@ -1,0 +1,13 @@
+.gradle/
+build/
+*/build/
+local.properties
+*.iml
+.idea/
+.vscode/
+*.apk
+*.aab
+captures/
+.externalNativeBuild/
+.cxx/
+node_modules/

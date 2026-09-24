@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feed - Vizinho Ajuda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f3faf4;
+        --panel: #ffffff;
+        --primary: #2e7d32;
+        --primary-dark: #1d4d1d;
+        --text: #1d1d1d;
+        --muted: #667085;
+        --line: #e5efe6;
+        --success: #15803d;
+        --shadow: rgba(18, 58, 23, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(180deg, #ebf9ee 0%, #f8fbf9 100%);
+        color: var(--text);
+      }
+
+      .shell {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 28px 20px 60px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        color: var(--primary-dark);
+      }
+
+      .brand-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), #5ab76a);
+        color: white;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .nav a, .logout-btn {
+        text-decoration: none;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--primary-dark);
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-weight: 700;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        box-shadow: 0 14px 32px var(--shadow);
+      }
+
+      .composer {
+        padding: 20px;
+      }
+
+      .composer h2 {
+        margin: 0 0 16px;
+        color: var(--primary-dark);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 110px;
+        resize: vertical;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        font: inherit;
+        background: #fbfffc;
+      }
+
+      .composer-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .tag {
+        background: #eef9f0;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--primary-dark);
+        font-weight: 600;
+        padding: 8px 12px;
+      }
+
+      .post-btn {
+        border: none;
+        background: linear-gradient(135deg, var(--primary), #52a95f);
+        color: white;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .feed {
+        margin-top: 22px;
+      }
+
+      .post {
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+
+      .post-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), #67bc71);
+        color: white;
+        font-weight: 800;
+      }
+
+      .author h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .author small {
+        color: var(--muted);
+      }
+
+      .post p {
+        margin: 0;
+        line-height: 1.75;
+        color: #2b2b2b;
+      }
+
+      .post-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .chip {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #f5faf6;
+        border: 1px solid var(--line);
+        color: var(--primary-dark);
+        font-weight: 600;
+        font-size: 0.82rem;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .card h3 {
+        margin-top: 0;
+        color: var(--primary-dark);
+      }
+
+      .list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #f8fbf9;
+        border: 1px solid var(--line);
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 0 6px rgba(21,128,61,0.12);
+      }
+
+      @media (max-width: 860px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-badge">VA</div>
+          Vizinho Ajuda
+        </div>
+
+        <nav class="nav">
+          <a href="community.html">Comunidade</a>
+          <a href="feed.html">Feed</a>
+          <button class="logout-btn" id="logoutBtn" type="button">Sair</button>
+        </nav>
+      </header>
+
+      <div class="layout">
+        <main>
+          <section class="panel composer">
+            <h2>Publicar pedido de ajuda</h2>
+            <textarea id="postInput" placeholder="Preciso de ajuda com..."></textarea>
+            <div class="composer-actions">
+              <span class="tag">#Comunidade</span>
+              <button class="post-btn" type="button" id="publishBtn">Publicar</button>
+            </div>
+          </section>
+
+          <section class="feed" id="feedList"></section>
+        </main>
+
+        <aside class="sidebar">
+          <section class="panel card">
+            <h3>Disponíveis agora</h3>
+            <ul class="list">
+              <li><span>Marina</span><span class="status-dot"></span></li>
+              <li><span>Diego</span><span class="status-dot"></span></li>
+              <li><span>Paula</span><span class="status-dot"></span></li>
+            </ul>
+          </section>
+
+          <section class="panel card">
+            <h3>Ajuda popular</h3>
+            <ul class="list">
+              <li><span>Compra de mercado</span><span>12</span></li>
+              <li><span>Entrega de remédios</span><span>8</span></li>
+              <li><span>Reparo simples</span><span>6</span></li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      const currentUser = JSON.parse(localStorage.getItem('vizinhoUser') || 'null');
+      if (!currentUser) {
+        window.location.href = 'index.html';
+      }
+
+      const posts = [
+        {
+          nome: 'Marina',
+          horario: 'há 20 min',
+          texto: 'Preciso de alguém para me ajudar a levar uma compra de supermercado até casa. Tenho dificuldade de carregar as sacolas.'
+        },
+        {
+          nome: 'Carlos',
+          horario: 'há 1 hora',
+          texto: 'Alguém poderia me ajudar com uma ligação para agendar uma consulta na unidade de saúde?'
+        },
+        {
+          nome: 'Renata',
+          horario: 'há 2 horas',
+          texto: 'Vou fazer uma sopa para uma senhora da vizinhança. Quem quiser ajudar na entrega, me avisa.'
+        }
+      ];
+
+      const feedList = document.getElementById('feedList');
+      function renderFeed() {
+        feedList.innerHTML = posts.map((post) => `
+          <article class="panel post">
+            <div class="post-head">
+              <div class="author">
+                <div class="avatar">${post.nome.charAt(0)}</div>
+                <div>
+                  <h3>${post.nome}</h3>
+                  <small>${post.horario}</small>
+                </div>
+              </div>
+            </div>
+            <p>${post.texto}</p>
+            <div class="post-actions">
+              <span class="chip">💬 Comentar</span>
+              <span class="chip">🤝 Ajudar</span>
+            </div>
+          </article>
+        `).join('');
+      }
+
+      document.getElementById('publishBtn').addEventListener('click', () => {
+        const text = document.getElementById('postInput').value.trim();
+        if (!text) return;
+
+        posts.unshift({
+          nome: currentUser?.nome || 'Você',
+          horario: 'agora',
+          texto: text
+        });
+
+        document.getElementById('postInput').value = '';
+        renderFeed();
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('vizinhoUser');
+        window.location.href = 'index.html';
+      });
+
+      renderFeed();
+    </script>
+  </body>
+</html>

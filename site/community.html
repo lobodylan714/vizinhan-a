@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comunidade - Vizinho Ajuda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f3faf4;
+        --panel: #ffffff;
+        --primary: #2e7d32;
+        --primary-dark: #1d4d1d;
+        --text: #1d1d1d;
+        --muted: #667085;
+        --line: #e5efe6;
+        --success: #15803d;
+        --shadow: rgba(18, 58, 23, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(180deg, #ebf9ee 0%, #f8fbf9 100%);
+        color: var(--text);
+      }
+
+      .layout {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px 20px 60px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        color: var(--primary-dark);
+      }
+
+      .brand-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), #5ab76a);
+        color: white;
+        font-size: 1rem;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .user-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(46, 125, 50, 0.08);
+        color: var(--primary-dark);
+        border: 1px solid rgba(46, 125, 50, 0.12);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+
+      .mini-avatar {
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        overflow: hidden;
+        color: white;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .mini-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+      .logout-btn {
+        border: none;
+        background: #e9f6ea;
+        color: var(--primary-dark);
+        border-radius: 10px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .profile-btn {
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--primary-dark);
+        border-radius: 10px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .profile-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: rgba(20, 45, 24, 0.38);
+      }
+
+      .profile-modal[hidden] { display: none; }
+
+      .profile-dialog {
+        width: min(100%, 440px);
+        padding: 26px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(18, 58, 23, 0.2);
+      }
+
+      .profile-dialog h2 { margin: 0 0 8px; color: var(--primary-dark); }
+      .profile-dialog p { margin: 0 0 20px; color: var(--muted); line-height: 1.5; }
+      .profile-field { display: grid; gap: 8px; margin-bottom: 18px; font-weight: 700; }
+      .profile-field input[type="file"] { width: 100%; }
+      .color-options { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+      .color-option {
+        width: 100%;
+        aspect-ratio: 1;
+        border: 3px solid transparent;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .color-option.selected { border-color: var(--text); box-shadow: 0 0 0 2px white; }
+      .profile-preview {
+        width: 76px;
+        height: 76px;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        font-size: 1.7rem;
+        font-weight: 800;
+        overflow: hidden;
+      }
+      .profile-preview img { width: 100%; height: 100%; object-fit: cover; }
+      .profile-actions { display: flex; justify-content: flex-end; gap: 10px; }
+      .profile-actions button { border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer; font-weight: 700; }
+      .profile-cancel { background: #edf5ee; color: var(--primary-dark); }
+      .profile-save { background: var(--primary); color: white; }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 22px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        box-shadow: 0 14px 32px var(--shadow);
+      }
+
+      .welcome {
+        padding: 28px;
+      }
+
+      .welcome h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 3vw, 3rem);
+        color: var(--primary-dark);
+      }
+
+      .welcome p {
+        margin: 0;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .stat-box {
+        background: #f7faf8;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px 16px;
+      }
+
+      .stat-box strong {
+        display: block;
+        font-size: 1.6rem;
+        color: var(--primary);
+      }
+
+      .stat-box span {
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+
+      .side-card {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .side-card h3 {
+        margin: 0 0 12px;
+        color: var(--primary-dark);
+      }
+
+      .tiny-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .tiny-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #f8fbf9;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 0 6px rgba(21, 128, 61, 0.12);
+      }
+
+      .community-panel {
+        margin-top: 30px;
+        padding: 24px 20px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        color: var(--primary-dark);
+      }
+
+      .filter-chip {
+        border: 1px solid var(--line);
+        background: #f5faf6;
+        color: var(--primary-dark);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .user-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+      }
+
+      .user-card {
+        padding: 18px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #fbfffc 0%, #f4faf5 100%);
+        border: 1px solid var(--line);
+      }
+
+      .avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), #67bc71);
+        color: white;
+        font-weight: 800;
+        margin-bottom: 12px;
+      }
+
+      .user-card h3 {
+        margin: 0 0 6px;
+        font-size: 1.08rem;
+      }
+
+      .user-card p {
+        margin: 0 0 14px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        color: var(--success);
+        font-weight: 600;
+      }
+
+      .help-btn {
+        border: none;
+        border-radius: 10px;
+        background: var(--primary);
+        color: white;
+        font-weight: 700;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 860px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-badge">VA</div>
+          Vizinho Ajuda
+        </div>
+
+        <div class="actions">
+          <div class="user-pill" id="userInfo">Visitante</div>
+          <button class="profile-btn" id="profileBtn" type="button">Meu perfil</button>
+          <button class="logout-btn" id="logoutBtn" type="button">Sair</button>
+        </div>
+      </header>
+
+      <div class="profile-modal" id="profileModal" hidden>
+        <section class="profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+          <h2 id="profileTitle">Personalizar perfil</h2>
+          <p>Escolha a cor do seu avatar ou coloque uma foto para aparecer na comunidade.</p>
+          <div class="profile-preview" id="profilePreview"></div>
+          <label class="profile-field">
+            Cor do avatar
+            <span class="color-options" id="colorOptions" aria-label="Escolha uma cor para o avatar">
+              <button class="color-option" type="button" data-color="#2e7d32" style="background:#2e7d32" aria-label="Verde"></button>
+              <button class="color-option" type="button" data-color="#2563eb" style="background:#2563eb" aria-label="Azul"></button>
+              <button class="color-option" type="button" data-color="#7c3aed" style="background:#7c3aed" aria-label="Roxo"></button>
+              <button class="color-option" type="button" data-color="#db2777" style="background:#db2777" aria-label="Rosa"></button>
+              <button class="color-option" type="button" data-color="#dc2626" style="background:#dc2626" aria-label="Vermelho"></button>
+              <button class="color-option" type="button" data-color="#ea580c" style="background:#ea580c" aria-label="Laranja"></button>
+              <button class="color-option" type="button" data-color="#ca8a04" style="background:#ca8a04" aria-label="Amarelo"></button>
+              <button class="color-option" type="button" data-color="#0891b2" style="background:#0891b2" aria-label="Turquesa"></button>
+            </span>
+          </label>
+          <label class="profile-field">
+            Foto de perfil
+            <input id="profilePhoto" type="file" accept="image/png,image/jpeg,image/webp" />
+          </label>
+          <div class="profile-actions">
+            <button class="profile-cancel" id="profileCancel" type="button">Cancelar</button>
+            <button class="profile-save" id="profileSave" type="button">Salvar perfil</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="hero">
+        <div class="panel welcome">
+          <h1>Comunidade em ação</h1>
+          <p>
+            Veja quem está disponível para ajudar na sua região. Entre ou cadastre-se para
+            entrar em contato com outros membros da comunidade.
+          </p>
+
+          <div class="stats">
+            <div class="stat-box">
+              <strong>24</strong>
+              <span>Usuários ativos</span>
+            </div>
+            <div class="stat-box">
+              <strong>18</strong>
+              <span>Pedidos abertos</span>
+            </div>
+            <div class="stat-box">
+              <strong>11</strong>
+              <span>Ajuda confirmada</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel side-card">
+          <h3>Disponíveis agora</h3>
+          <ul class="tiny-list">
+            <li><span>Marina</span><span class="dot"></span></li>
+            <li><span>Diego</span><span class="dot"></span></li>
+            <li><span>Renata</span><span class="dot"></span></li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="panel community-panel">
+        <div class="section-head">
+          <h2>Outros usuários</h2>
+          <div class="filter-chip">Próximo de você</div>
+        </div>
+
+        <div class="user-list" id="userList"></div>
+      </section>
+    </div>
+
+    <script>
+      const userInfo = document.getElementById('userInfo');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const userList = document.getElementById('userList');
+      const profileBtn = document.getElementById('profileBtn');
+      const profileModal = document.getElementById('profileModal');
+      const profilePreview = document.getElementById('profilePreview');
+      const colorOptions = document.querySelectorAll('.color-option');
+      const profilePhoto = document.getElementById('profilePhoto');
+      const profileCancel = document.getElementById('profileCancel');
+      const profileSave = document.getElementById('profileSave');
+
+      const currentUser = JSON.parse(localStorage.getItem('vizinhoUser') || 'null');
+
+      if (!currentUser) {
+        window.location.href = 'index.html';
+      }
+
+      userInfo.textContent = currentUser?.nome || 'Usuário';
+
+      const profileStorageKey = `vizinhoProfile_${currentUser?.email || 'visitante'}`;
+      const savedProfile = JSON.parse(localStorage.getItem(profileStorageKey) || '{}');
+      let selectedPhoto = savedProfile.photo || '';
+      let selectedColor = savedProfile.color || '#2e7d32';
+
+      function renderProfilePreview() {
+        profilePreview.style.background = selectedColor;
+        profilePreview.innerHTML = selectedPhoto
+          ? `<img src="${selectedPhoto}" alt="Foto de perfil">`
+          : (currentUser?.nome || 'U').charAt(0).toUpperCase();
+      }
+
+      function renderUserPill() {
+        userInfo.replaceChildren();
+        const avatar = document.createElement('span');
+        avatar.className = 'mini-avatar';
+        avatar.style.background = selectedColor;
+
+        if (savedProfile.photo) {
+          const image = document.createElement('img');
+          image.src = savedProfile.photo;
+          image.alt = `Foto de ${currentUser?.nome || 'usuário'}`;
+          avatar.appendChild(image);
+        } else {
+          avatar.textContent = (currentUser?.nome || 'U').charAt(0).toUpperCase();
+        }
+
+        userInfo.append(avatar, document.createTextNode(currentUser?.nome || 'Usuário'));
+      }
+
+      function openProfileModal() {
+        selectedColor = savedProfile.color || '#2e7d32';
+        profilePhoto.value = '';
+        colorOptions.forEach((option) => {
+          option.classList.toggle('selected', option.dataset.color === selectedColor);
+        });
+        renderProfilePreview();
+        profileModal.hidden = false;
+      }
+
+      function closeProfileModal() {
+        profileModal.hidden = true;
+      }
+
+      colorOptions.forEach((option) => {
+        option.addEventListener('click', () => {
+          selectedColor = option.dataset.color;
+          colorOptions.forEach((colorOption) => {
+            colorOption.classList.toggle('selected', colorOption === option);
+          });
+          profilePreview.style.background = selectedColor;
+        });
+      });
+
+      profilePhoto.addEventListener('change', () => {
+        const file = profilePhoto.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+          profilePhoto.value = '';
+          window.alert('Escolha uma imagem de até 2 MB.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          selectedPhoto = reader.result;
+          renderProfilePreview();
+        });
+        reader.readAsDataURL(file);
+      });
+
+      profileBtn.addEventListener('click', openProfileModal);
+      profileCancel.addEventListener('click', closeProfileModal);
+      profileModal.addEventListener('click', (event) => {
+        if (event.target === profileModal) closeProfileModal();
+      });
+
+      profileSave.addEventListener('click', () => {
+        savedProfile.color = selectedColor;
+        savedProfile.photo = selectedPhoto;
+        localStorage.setItem(profileStorageKey, JSON.stringify(savedProfile));
+        closeProfileModal();
+        renderProfilePreview();
+        renderUserPill();
+      });
+
+      renderUserPill();
+      if (!savedProfile.color && !savedProfile.photo) openProfileModal();
+
+      const users = [
+        { nome: 'Marina', cidade: 'Centro', ajuda: 'Compra de mercado', status: 'Disponível' },
+        { nome: 'Diego', cidade: 'Vila Nova', ajuda: 'Troca de móveis', status: 'Disponível' },
+        { nome: 'Renata', cidade: 'Jardim', ajuda: 'Ajudante em casa', status: 'Disponível' },
+        { nome: 'Carlos', cidade: 'Bairro Alto', ajuda: 'Transporte', status: 'Disponível' },
+        { nome: 'Paula', cidade: 'São Pedro', ajuda: 'Apoio emocional', status: 'Disponível' },
+        { nome: 'Lucas', cidade: 'Alvorada', ajuda: 'Reparos simples', status: 'Disponível' },
+      ];
+
+      userList.innerHTML = users.map((user, index) => `
+        <article class="user-card">
+          <div class="avatar">${user.nome.charAt(0)}</div>
+          <h3>${user.nome}</h3>
+          <p>${user.ajuda}</p>
+          <div class="meta">
+            <span class="status"><span class="dot"></span> ${user.status}</span>
+            <button class="help-btn" type="button">Ajudar</button>
+          </div>
+        </article>
+      `).join('');
+
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('vizinhoUser');
+        window.location.href = 'index.html';
+      });
+    </script>
+  </body>
+</html>

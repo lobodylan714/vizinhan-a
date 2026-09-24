@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vizinho Ajuda - Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        display: block;
+        padding: 40px 20px;
+      }
+
+      .dashboard {
+        max-width: 900px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.8);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 60px rgba(19,63,28,0.12);
+      }
+
+      h2 {
+        margin-top: 0;
+        color: #1d4d1d;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 24px;
+      }
+
+      .mini-card {
+        background: #f4faf5;
+        border: 1px solid rgba(46,125,50,0.1);
+        border-radius: 18px;
+        padding: 22px;
+      }
+
+      .mini-card strong {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 8px;
+        color: #2e7d32;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <h2>Bem-vindo ao Vizinho Ajuda</h2>
+      <p>Seu painel principal da comunidade.</p>
+
+      <div class="card-grid">
+        <div class="mini-card">
+          <strong>12</strong>
+          Pedidos ativos
+        </div>
+        <div class="mini-card">
+          <strong>8</strong>
+          Voluntários online
+        </div>
+        <div class="mini-card">
+          <strong>4</strong>
+          Ajuda confirmada
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

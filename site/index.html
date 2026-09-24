@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vizinho Ajuda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="brand-panel">
+        <div class="brand-badge">VA</div>
+        <h1>Vizinho Ajuda</h1>
+        <p>
+          Conectando pessoas para compartilhar ajuda, favores e apoio da comunidade.
+        </p>
+      </div>
+
+      <div class="auth-card">
+        <div class="tab-buttons">
+          <button class="tab-button active" type="button" data-tab="login">Entrar</button>
+          <button class="tab-button" type="button" data-tab="register">Criar conta</button>
+        </div>
+
+        <form id="loginForm" class="auth-form active" novalidate>
+          <label>
+            <span>E-mail</span>
+            <input type="email" id="loginEmail" placeholder="seu@email.com" required />
+          </label>
+
+          <label>
+            <span>Senha</span>
+            <input type="password" id="loginPassword" placeholder="********" required />
+          </label>
+
+          <button type="submit" class="primary-btn">Entrar</button>
+        </form>
+
+        <form id="registerForm" class="auth-form" novalidate>
+          <label>
+            <span>Nome</span>
+            <input type="text" id="registerName" placeholder="Seu nome" required />
+          </label>
+
+          <label>
+            <span>E-mail</span>
+            <input type="email" id="registerEmail" placeholder="seu@email.com" required />
+          </label>
+
+          <label>
+            <span>Senha</span>
+            <input type="password" id="registerPassword" placeholder="Crie uma senha" required />
+          </label>
+
+          <button type="submit" class="primary-btn">Cadastrar</button>
+        </form>
+
+        <div id="message" class="message" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
