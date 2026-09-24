@@ -124,9 +124,11 @@ forms.register.addEventListener('submit', async (event) => {
 
   const nome = document.getElementById('registerName').value.trim();
   const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+  const telefone = document.getElementById('registerPhone').value.trim();
   const password = document.getElementById('registerPassword').value.trim();
+  const phoneDigits = telefone.replace(/\D/g, '');
 
-  if (!nome || !email || !password) {
+  if (!nome || !email || !telefone || !password) {
     showMessage('Preencha todos os campos.', 'error');
     return;
   }
@@ -141,6 +143,11 @@ forms.register.addEventListener('submit', async (event) => {
     return;
   }
 
+  if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+    showMessage('Digite um telefone válido com DDD.', 'error');
+    return;
+  }
+
   if (email.toLowerCase() === TEST_USER.email.toLowerCase() && password === TEST_USER.senha) {
     showMessage('Este usuário de teste já existe no sistema.', 'error');
     return;
@@ -151,12 +158,12 @@ forms.register.addEventListener('submit', async (event) => {
     submitButton.textContent = 'Cadastrando...';
 
     const { error } = await supabaseClient.from('usuarios').insert([
-      { nome, email, senha: password }
+      { nome, email, telefone, senha: password }
     ]);
 
     if (error) throw error;
 
-    localStorage.setItem('vizinhoUser', JSON.stringify({ nome, email }));
+    localStorage.setItem('vizinhoUser', JSON.stringify({ nome, email, telefone }));
     showMessage('Cadastro realizado com sucesso! Abrindo a comunidade...', 'success');
     forms.register.reset();
     setTimeout(() => {
