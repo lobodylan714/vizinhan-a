@@ -421,15 +421,15 @@
 
           <div class="stats">
             <div class="stat-box">
-              <strong>24</strong>
+              <strong id="activeUsersCount">0</strong>
               <span>Usuários ativos</span>
             </div>
             <div class="stat-box">
-              <strong>18</strong>
+              <strong>0</strong>
               <span>Pedidos abertos</span>
             </div>
             <div class="stat-box">
-              <strong>11</strong>
+              <strong>0</strong>
               <span>Ajuda confirmada</span>
             </div>
           </div>
@@ -437,10 +437,8 @@
 
         <aside class="panel side-card">
           <h3>Disponíveis agora</h3>
-          <ul class="tiny-list">
-            <li><span>Marina</span><span class="dot"></span></li>
-            <li><span>Diego</span><span class="dot"></span></li>
-            <li><span>Renata</span><span class="dot"></span></li>
+          <ul class="tiny-list" id="availableList">
+            <li><span>Carregando usuários...</span></li>
           </ul>
         </aside>
       </section>
@@ -455,10 +453,16 @@
       </section>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+      const supabaseUrl = 'https://qgcbtcgdfydtgzmtjaxs.supabase.co';
+      const supabaseKey = 'sb_publishable_yLWo1rec33dEcdZ3eragcw_OUbNkAgF';
+      const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
       const userInfo = document.getElementById('userInfo');
       const logoutBtn = document.getElementById('logoutBtn');
       const userList = document.getElementById('userList');
+      const availableList = document.getElementById('availableList');
+      const activeUsersCount = document.getElementById('activeUsersCount');
       const profileBtn = document.getElementById('profileBtn');
       const profileModal = document.getElementById('profileModal');
       const profilePreview = document.getElementById('profilePreview');
@@ -563,26 +567,46 @@
       renderUserPill();
       if (!savedProfile.color && !savedProfile.photo) openProfileModal();
 
-      const users = [
-        { nome: 'Marina', cidade: 'Centro', ajuda: 'Compra de mercado', status: 'Disponível' },
-        { nome: 'Diego', cidade: 'Vila Nova', ajuda: 'Troca de móveis', status: 'Disponível' },
-        { nome: 'Renata', cidade: 'Jardim', ajuda: 'Ajudante em casa', status: 'Disponível' },
-        { nome: 'Carlos', cidade: 'Bairro Alto', ajuda: 'Transporte', status: 'Disponível' },
-        { nome: 'Paula', cidade: 'São Pedro', ajuda: 'Apoio emocional', status: 'Disponível' },
-        { nome: 'Lucas', cidade: 'Alvorada', ajuda: 'Reparos simples', status: 'Disponível' },
-      ];
+      async function loadCommunityUsers() {
+        const { data: users, error } = await supabaseClient
+          .from('usuarios')
+          .select('id, nome, email, telefone')
+          .order('nome');
 
-      userList.innerHTML = users.map((user, index) => `
-        <article class="user-card">
-          <div class="avatar">${user.nome.charAt(0)}</div>
-          <h3>${user.nome}</h3>
-          <p>${user.ajuda}</p>
-          <div class="meta">
-            <span class="status"><span class="dot"></span> ${user.status}</span>
-            <button class="help-btn" type="button">Ajudar</button>
-          </div>
-        </article>
-      `).join('');
+        if (error) {
+          console.error(error);
+          userList.innerHTML = '<p>Não foi possível carregar os usuários cadastrados.</p>';
+          availableList.innerHTML = '<li><span>Erro ao carregar usuários.</span></li>';
+          return;
+        }
+
+        const otherUsers = (users || []).filter((user) => user.email !== currentUser.email);
+        activeUsersCount.textContent = otherUsers.length;
+
+        if (!otherUsers.length) {
+          userList.innerHTML = '<p>Ainda não há outros usuários cadastrados. Convide alguém para entrar na comunidade.</p>';
+          availableList.innerHTML = '<li><span>Nenhum usuário disponível ainda.</span></li>';
+          return;
+        }
+
+        availableList.innerHTML = otherUsers.slice(0, 3).map((user) => `
+          <li><span>${user.nome}</span><span class="dot"></span></li>
+        `).join('');
+
+        userList.innerHTML = otherUsers.map((user) => `
+          <article class="user-card">
+            <div class="avatar">${user.nome.charAt(0).toUpperCase()}</div>
+            <h3>${user.nome}</h3>
+            <p>Usuário da comunidade</p>
+            <div class="meta">
+              <span class="status"><span class="dot"></span> Disponível</span>
+              <button class="help-btn" type="button">Ajudar</button>
+            </div>
+          </article>
+        `).join('');
+      }
+
+      loadCommunityUsers();
 
       logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('vizinhoUser');

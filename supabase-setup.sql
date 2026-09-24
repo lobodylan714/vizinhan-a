@@ -15,3 +15,10 @@ on public.usuarios
 for insert
 to public
 with check (true);
+
+drop policy if exists usuarios_select_public on public.usuarios;
+create policy usuarios_select_public
+on public.usuarios
+for select
+to public
+using (true);
