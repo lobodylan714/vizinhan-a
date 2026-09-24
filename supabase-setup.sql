@@ -10,5 +10,5 @@ drop policy if exists usuarios_insert_public on public.usuarios;
 create policy usuarios_insert_public
 on public.usuarios
 for insert
-to anon, authenticated
+to public
 with check (true);
