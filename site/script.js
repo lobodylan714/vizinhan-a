@@ -36,6 +36,10 @@ function switchTab(tab) {
   });
 }
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 function handleTestUserLogin(email, password) {
   const normalizedEmail = email.trim().toLowerCase();
 
@@ -62,11 +66,16 @@ tabButtons.forEach((button) => {
 forms.login.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const email = document.getElementById('loginEmail').value.trim();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value.trim();
 
   if (!email || !password) {
     showMessage('Preencha e-mail e senha.', 'error');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showMessage('Digite um e-mail válido, como seuemail@gmail.com.', 'error');
     return;
   }
 
@@ -112,11 +121,21 @@ forms.register.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const nome = document.getElementById('registerName').value.trim();
-  const email = document.getElementById('registerEmail').value.trim();
+  const email = document.getElementById('registerEmail').value.trim().toLowerCase();
   const password = document.getElementById('registerPassword').value.trim();
 
   if (!nome || !email || !password) {
     showMessage('Preencha todos os campos.', 'error');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showMessage('Digite um e-mail válido, como seuemail@gmail.com.', 'error');
+    return;
+  }
+
+  if (password.length < 6) {
+    showMessage('A senha precisa ter pelo menos 6 caracteres.', 'error');
     return;
   }
 
