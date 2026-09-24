@@ -166,6 +166,8 @@ forms.register.addEventListener('submit', async (event) => {
     console.error(error);
     if (error.code === '23505') {
       showMessage('Este e-mail já está cadastrado.', 'error');
+    } else if (error.code === '42501') {
+      showMessage('O Supabase bloqueou o cadastro. Execute o arquivo supabase-setup.sql no SQL Editor.', 'error');
     } else {
       showMessage('Não foi possível salvar o cadastro no Supabase. Verifique a tabela e a política de INSERT.', 'error');
     }
