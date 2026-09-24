@@ -2,6 +2,8 @@
 alter table public.usuarios
 add column if not exists senha text;
 
+notify pgrst, 'reload schema';
+
 alter table public.usuarios enable row level security;
 
 drop policy if exists usuarios_insert_public on public.usuarios;
