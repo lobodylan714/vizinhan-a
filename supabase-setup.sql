@@ -2,6 +2,9 @@
 alter table public.usuarios
 add column if not exists senha text;
 
+alter table public.usuarios
+alter column telefone drop not null;
+
 notify pgrst, 'reload schema';
 
 alter table public.usuarios enable row level security;

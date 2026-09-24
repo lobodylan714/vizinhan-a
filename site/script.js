@@ -169,7 +169,7 @@ forms.register.addEventListener('submit', async (event) => {
     } else if (error.code === '42501') {
       showMessage('O Supabase bloqueou o cadastro. Execute o arquivo supabase-setup.sql no SQL Editor.', 'error');
     } else {
-      showMessage('Não foi possível salvar o cadastro no Supabase. Verifique a tabela e a política de INSERT.', 'error');
+      showMessage(`Não foi possível salvar: ${error.message || 'verifique a configuração da tabela usuarios.'}`, 'error');
     }
   } finally {
     submitButton.disabled = false;
